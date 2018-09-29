@@ -3,10 +3,37 @@
 <head>
     <title>Analyze Sample</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 </head>
-<body>
+<body onload='init()'>
 
 <script type="text/javascript">
+    function getBase64Image(){     
+        p=document.getElementById("fileUpload").value;
+        img1.setAttribute('src', p); 
+        canvas.width = img1.width; 
+        canvas.height = img1.height; 
+        var ctx = canvas.getContext("2d"); 
+        ctx.drawImage(img1, 0, 0); 
+        var dataURL = canvas.toDataURL("image/png");
+        alert("from getbase64 function"+dataURL );    
+        return dataURL;
+    } 
+
+    function getClippedRegion(image, x, y, width, height) {
+
+        var canvas = document.createElement('canvas'),
+            ctx = canvas.getContext('2d');
+
+        canvas.width = width;
+        canvas.height = height;
+
+        //                   source region         dest. region
+        ctx.drawImage(image, x, y, width, height,  0, 0, width, height);
+
+        return canvas;
+    }
+
     function processImage() {
         // **********************************************
         // *** Update or verify the following values. ***
@@ -51,12 +78,19 @@
             type: "POST",
 
             // Request body.
-            data: '{"url": ' + '"' + sourceImageUrl + '"}',
+            
+            data: '{"url": ' + '"' + document.querySelector("#sourceImage").src + '"}'
         })
 
         .done(function(data) {
             // Show formatted JSON on webpage.
-            $("#responseTextArea").val(JSON.stringify(data, null, 2));
+            var tags = data["description"]["tags"];
+            var stringAlert = "I see: ";
+            for (var i = 0; i < 3; i++){
+                stringAlert += JSON.stringify(tags[i]) + " ";
+            }
+            $("#responseTextArea").val(stringAlert);
+            responsiveVoice.speak(stringAlert);
         })
 
         .fail(function(jqXHR, textStatus, errorThrown) {
