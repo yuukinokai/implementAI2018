@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iSee</title>
+    <link rel="stylesheet" href="implementAI.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+</head>
+
+    <body onload='init()' background="eyes.PNG">
+
+            <script type="text/javascript">
+                function getClippedRegion(image, x, y, width, height) {
+            
+                    var canvas = document.createElement('canvas'),
+                        ctx = canvas.getContext('2d');
+            
+                    canvas.width = width;
+                    canvas.height = height;
+            
+                    //                   source region         dest. region
+                    ctx.drawImage(image, x, y, width, height,  0, 0, width, height);
+            
+                    return canvas;
+                }
+            
+                function processImage() {
+                    // **********************************************
+                    // *** Update or verify the following values. ***
+                    // **********************************************
+            
+                    // Replace <Subscription Key> with your valid subscription key.
+                    var subscriptionKey = "fb2a1d4c0ddc4948b6c15bbf8c774423";
+            
+                    // You must use the same Azure region in your REST API method as you used to
+                    // get your subscription keys. For example, if you got your subscription keys
+                    // from the West US region, replace "westcentralus" in the URL
+                    // below with "westus".
+                    //
+                    // Free trial subscription keys are generated in the West Central US region.
+                    // If you use a free trial subscription key, you shouldn't need to change
+                    // this region.
+                    var uriBase =
+                        "https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze";
+            
+                    // Request parameters.
+                    var params = {
+                        "visualFeatures": "Categories,Description,Color",
+                        "details": "",
+                        "language": "en",
+                    };
+
+                    const file = document.getElementById('fileinput').files[0];
+
+                    blobService.createBlockBlobFromBrowserFile('iseeimage', 
+                                                                file.name, 
+                                                                file, 
+                                                                (error, result) => {
+                                                                    if(error) {
+                                                                        alert("error")
+                                                                        // Handle blob error
+                                                                    } else {
+                                                                        alert('Upload is successful');
+                                                                    }
+                    });
+
+                    var url;
+
+                    blobService.listBlobsSegmented('iseeimage', null, (error, results) => {
+                        if (error) {
+                            alert('error');
+                            // Handle list blobs error
+                        } else {
+                            results.entries.forEach(blob => {
+                                url = 'https://'+ 'iseeimage' +'.blob.core.windows.net/'+ 'iseeimage' + '/' + blob.name;
+                                alert(url);
+                            });
+                        }
+                    });
+
+                    
+            
+                    // Display the image.
+                    var sourceImageUrl = url;
+                    document.querySelector("#sourceImage").src = sourceImageUrl;
+            
+                    // Make the REST API call.
+                    $.ajax({
+                        url: uriBase + "?" + $.param(params),
+            
+                        // Request headers.
+                        beforeSend: function(xhrObj){
+                            xhrObj.setRequestHeader("Content-Type","application/json");
+                            xhrObj.setRequestHeader(
+                                "Ocp-Apim-Subscription-Key", subscriptionKey);
+                        },
+            
+                        type: "POST",
+            
+                        // Request body.
+                        
+                        data: '{"url": ' + '"' + url + '"}'
+                    })
+            
+                    .done(function(data) {
+                        // Show formatted JSON on webpage.
+                        var tags = data["description"]["tags"];
+                        var stringAlert = "I see: ";
+                        for (var i = 0; i < 3; i++){
+                            stringAlert += JSON.stringify(tags[i]) + " ";
+                        }
+                        $("#responseTextArea").val(stringAlert);
+                        responsiveVoice.speak(stringAlert);
+                    })
+            
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                        // Display error message.
+                        var errorString = (errorThrown === "") ? "Error. " :
+                            errorThrown + " (" + jqXHR.status + "): ";
+                        errorString += (jqXHR.responseText === "") ? "" :
+                            jQuery.parseJSON(jqXHR.responseText).message;
+                        alert(errorString);
+                    });
+                };
+            </script>
+
+        <div class="image">
+            <h1 id="iSee">iSee</h1>
+            <img src="eyes.PNG"/>
+        </div>
+
+        <label id="uploadButton">Upload File
+        <input type="file" id="fileinput" />
+        </label>
+
+        <br><br>
+        Image to analyze:
+        <input type="text" name="inputImage" id="inputImage"
+            value="http://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg" />
+        <button onclick="processImage()">Analyze image</button>
+        <br><br>
+
+        <div id="wrapper" style="width:1020px; display:table;">
+        
+            <div id="jsonOutput" style="width:600px; display:table-cell;">
+                <br><br>
+                <textarea id="responseTextArea" class="UIInput"
+                            style="width:580px; height:400px;"></textarea>
+            </div>
+        
+            <div id="imageDiv" style="width:420px; display:table-cell;">
+                <br><br>
+                <img id="sourceImage" width="400" />
+            </div>
+        
+        </div>
+    </body>
+
+    <script src="scripts/azure-storage.blob.min.js"></script>
+    <script>
+        // Blob-related code goes here
+        const account = {
+            name: 'iseeimage',
+            sas:  '?sv=2017-11-09&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-09-30T08:05:08Z&st=2018-09-30T00:05:08Z&spr=https&sig=bqLi0aUTepS1DHKynmI7lktLpOzff0e6XGwcVuCvL2w%3D'
+        };
+
+        const blobUri = 'https://' + account.name + '.blob.core.windows.net';
+        const blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, account.sas);
+
+        document.getElementById('create-button').addEventListener('click', () => {
+
+            blobService.createContainerIfNotExists('iseeimage',  (error, container) => {
+                if (error) {
+                    // Handle create container error
+                } else {
+                    alert(container.name);
+                }
+            });
+        });
+        
+
+        document.getElementById('upload-button').addEventListener('click', () => {
+
+            const file = document.getElementById('fileinput').files[0];
+
+            blobService.createBlockBlobFromBrowserFile('iseeimage', 
+                                                        file.name, 
+                                                        file, 
+                                                        (error, result) => {
+                                                            if(error) {
+                                                                alert("error")
+                                                                // Handle blob error
+                                                            } else {
+                                                                console.log('Upload is successful');
+                                                            }
+                                                        });
+
+        });
+
+        document.getElementById('list-button').addEventListener('click', () => {
+
+            blobService.listBlobsSegmented('iseeimage', null, (error, results) => {
+                if (error) {
+                    alert('error');
+                    // Handle list blobs error
+                } else {
+                    results.entries.forEach(blob => {
+                        var url = 'https://'+ 'iseeimage' +'.blob.core.windows.net/'+ 'iseeimage' + '/' + blob.name;
+                        alert(url);
+                    });
+                }
+            });
+
+        });
+
+    </script>
+</html>

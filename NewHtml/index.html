@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<!--
+	Ion by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+   		 <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+		<title>iSEE image speaker</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-xlarge.css" />
+		</noscript>
+	</head>
+	<body id="top">
+			<script type="text/javascript">
+
+			
+				function processImage() {
+					// Replace <Subscription Key> with your valid subscription key.
+					var subscriptionKey = "fb2a1d4c0ddc4948b6c15bbf8c774423";
+					var uriBase =
+						"https://westcentralus.api.cognitive.microsoft.com/vision/v2.0/analyze";
+					var params = {
+						"visualFeatures": "Categories,Description,Color",
+						"details": "",
+						"language": "en",
+					};
+			
+					// Display the image.
+					var sourceImageUrl = document.getElementById("inputImage").value;
+					// document.querySelector("#sourceImage").src = sourceImageUrl;
+					
+					// Make the REST API call.
+					$.ajax({
+						url: uriBase + "?" + $.param(params),
+			
+						// Request headers.
+						beforeSend: function(xhrObj){
+							xhrObj.setRequestHeader("Content-Type","application/json");
+							xhrObj.setRequestHeader(
+								"Ocp-Apim-Subscription-Key", subscriptionKey);
+						},
+			
+						type: "POST",
+			
+						// Request body.
+						
+						data: '{"url": ' + '"' + sourceImageUrl + '"}'
+					})
+			
+					.done(function(data) {
+						// Show formatted JSON on webpage.
+						var tags = data["description"]["tags"];
+						var stringAlert = "I see...  " + JSON.stringify(tags[0]) + ", " + JSON.stringify(tags[1]) + " and " +JSON.stringify(tags[2]);
+						//alert(stringAlert);
+						responsiveVoice.speak(stringAlert);
+						document.getElementById('text').innerHTML = stringAlert;
+					})
+			
+					.fail(function(jqXHR, textStatus, errorThrown) {
+						// Display error message.
+						var errorString = (errorThrown === "") ? "Error. " :
+							errorThrown + " (" + jqXHR.status + "): ";
+						errorString += (jqXHR.responseText === "") ? "" :
+							jQuery.parseJSON(jqXHR.responseText).message;
+						alert(errorString);
+					});
+				};
+			</script>
+
+		<!-- Header -->
+			<header id="header" class="skel-layers-fixed">
+				<h1><a href="#">iSEE</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="https://github.com/yuukinokai/implementAI2018" class="button special">Github</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Banner -->
+			<section id="banner">
+				<div class="inner">
+					<h2>iSEE</h2>
+					<p>A guide for the blinds</p>
+					<input type="text" name="inputImage" id="inputImage"
+    value="http://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg" />
+					<ul class="actions">
+						<li><a href="#content" class="button big special">Upload</a></li>
+						<li><a onclick="processImage()" href="#elements" class="button big alt">See</a></li>
+					</ul>
+				</div>
+			</section>
+
+
+			<section id="one" class="wrapper style1">
+				<header class="major">
+					<p id="text">I see ...</p>
+				</header>
+			</section>
+			
+	</body>
+</html>
