@@ -26,6 +26,9 @@
 	<body id="top">
 			<script type="text/javascript">
 				function submitForm(){
+				<!--alert(document.getElementById('form1').value);-->
+					document.getElementById('LabelForm').innerHTML = "Wait";
+					document.getElementById('see').innerHTML = "Wait";
 					document.getElementById('form1').submit();
 				}
 
@@ -54,16 +57,16 @@
 				<div class="inner">
 					<h2>iSEE</h2>
 					<p>A guide for the visually impaired</p>
-					<!--<input type="text" name="inputImage" id="inputImage"-->
-    <!--value="http://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg" />-->
-					<!--<label id="uploadButton">Upload File</label>-->
-
 
 					<form id="form1" action="/desc" method="post">
+						<style type="text/css">
+						  #img{ display:none; }
+						</style>
+						<label for="img" id = 'LabelForm' class="big button alt">Select Image</label>
 						<input id="img" type="file" name="img" accept="image/*" onchange="submitForm()"/>
 					</form>
 
-					<button type="submit" value="Submit" class = "button big alt" onclick='readOutput();'>See</button>
+					<button id='see' type="submit" value="Submit" class = "button big alt" accept="image/*" onclick='readOutput();'>See</button>
 <!--<input type="file" multiple="false" accept="image/*" id="finput" onchange="loadFile(event)">-->
 					<ul class="actions">
 						<!--<li><a href="#content" class="button big special">Upload</a></li>-->
