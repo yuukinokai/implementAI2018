@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<!--
+	Ion by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+   		 <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+		<title>iSEE image speaker</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="./static/js/html5shiv.js"></script><![endif]-->
+		<script src="./static/js/jquery.min.js"></script>
+		<script src="./static/js/skel.min.js"></script>
+		<script src="./static/js/skel-layers.min.js"></script>
+		<script src="./static/js/init.js"></script>
+
+			<link rel="stylesheet" href="./static/css/skel.css">
+			<link rel="stylesheet" href="./static/css/style.css">
+			<link rel="stylesheet" href="./static/css/style-xlarge.css">
+
+	</head>
+	<body id="top">
+			<script type="text/javascript">
+				function submitForm(){
+					document.getElementById('form1').submit();
+				}
+
+				function readOutput() {
+					var text = document.getElementById('text').innerHTML;
+
+					<!--setTimeout(function(){ alert(text); }, 3000);-->
+					responsiveVoice.speak(text);
+
+				}
+
+			</script>
+
+		<!-- Header -->
+			<header id="header" class="skel-layers-fixed">
+				<h1><a href="#">iSEE</a></h1>
+				<nav id="nav">
+					<ul>
+						<li><a href="https://github.com/yuukinokai/implementAI2018" class="button special">Github</a></li>
+					</ul>
+				</nav>
+			</header>
+
+		<!-- Banner -->
+			<section id="banner">
+				<div class="inner">
+					<h2>iSEE</h2>
+					<p>A guide for the visually impaired</p>
+					<!--<input type="text" name="inputImage" id="inputImage"-->
+    <!--value="http://upload.wikimedia.org/wikipedia/commons/3/3c/Shaki_waterfall.jpg" />-->
+					<!--<label id="uploadButton">Upload File</label>-->
+
+
+					<form id="form1" action="/desc" method="post">
+						<input id="img" type="file" name="img" accept="image/*" onchange="submitForm()"/>
+					</form>
+
+					<button type="submit" value="Submit" class = "button big alt" onclick='readOutput();'>See</button>
+<!--<input type="file" multiple="false" accept="image/*" id="finput" onchange="loadFile(event)">-->
+					<ul class="actions">
+						<!--<li><a href="#content" class="button big special">Upload</a></li>-->
+						<!--<li><a id = "img" onclick='readOutput();' href="#elements" class="button big alt">See</a></li>-->
+					</ul>
+				</div>
+			</section>
+
+
+			<section id="one" class="wrapper style1">
+				<header class="major">
+					<p id="text">I see ... {{description}}</p>
+				</header>
+			</section>
+			
+	</body>
+</html>

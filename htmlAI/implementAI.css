@@ -7,20 +7,16 @@
          url('/htmlAI/CAT\ North\ Shadow.svg#rsuregular') format('svg');
 }
 
-.image h1{
-    z-index: 2;
+#iSee{
     padding: 15px;
     text-align: center;
-    font-size: 80px;
+    font-size: 120px;
     font-family: 'CAT North Shadow'; 
     letter-spacing: 5px;
     color:#3EB4DA; 
     -webkit-text-stroke: 2px;
     -webkit-text-stroke-color: black;
     
-}
-.image img{
-    z-index:1;
 }
 
 label{
@@ -31,7 +27,7 @@ label{
     left: 44%;
     position: absolute;
     width: 10%;
-    top: 25%;
+    top: 40%;
 
     cursor: pointer;
     transition: all 0.25s ease;
@@ -41,13 +37,8 @@ input[type="file"]{
     display: none;
 }
 
-#logo{
-    left:50%;
-    
-}
-
 body{
-    background-size: 400px 150px;
-    background-position: 70% 10%;
-    background-repeat: repeat-x;
+    background-size: 450px 150px;
+    background-position: 5% 5%;
+    background-repeat: no-repeat;
 }
