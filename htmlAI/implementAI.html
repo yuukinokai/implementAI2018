@@ -1,25 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Analyze Sample</title>
+    <title>iSee</title>
+    <link rel="stylesheet" href="implementAI.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 </head>
-<body onload='init()'>
+<body onload='init()' background="eyes.PNG">
 
 <script type="text/javascript">
-    function getBase64Image(){     
-        p=document.getElementById("fileUpload").value;
-        img1.setAttribute('src', p); 
-        canvas.width = img1.width; 
-        canvas.height = img1.height; 
-        var ctx = canvas.getContext("2d"); 
-        ctx.drawImage(img1, 0, 0); 
-        var dataURL = canvas.toDataURL("image/png");
-        alert("from getbase64 function"+dataURL );    
-        return dataURL;
-    } 
-
     function getClippedRegion(image, x, y, width, height) {
 
         var canvas = document.createElement('canvas'),
@@ -103,9 +92,14 @@
         });
     };
 </script>
+<div class="image">
+    <h1 id="iSee">iSee</h1>
+    <img src="eyes.PNG"/>
+</div>
 
-<h1>Analyze image:</h1>
-Enter the URL to an image, then click the <strong>Analyze image</strong> button.
+<label id="uploadButton">Upload File
+<input type="file" multiple="false" accept="image/*" id="finput" onchange="loadFile(event)">
+</label>
 <br><br>
 Image to analyze:
 <input type="text" name="inputImage" id="inputImage"
@@ -113,17 +107,18 @@ Image to analyze:
 <button onclick="processImage()">Analyze image</button>
 <br><br>
 <div id="wrapper" style="width:1020px; display:table;">
+
     <div id="jsonOutput" style="width:600px; display:table-cell;">
-        Response:
         <br><br>
         <textarea id="responseTextArea" class="UIInput"
                   style="width:580px; height:400px;"></textarea>
     </div>
+
     <div id="imageDiv" style="width:420px; display:table-cell;">
-        Source image:
         <br><br>
         <img id="sourceImage" width="400" />
     </div>
+
 </div>
 </body>
 </html>
